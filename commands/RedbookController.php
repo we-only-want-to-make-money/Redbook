@@ -13,12 +13,13 @@ class RedbookController extends Controller
     {
 
         $configs = array(
-            'name' => '糗事百科',
+            'name' => '小红书',
             'domains' => array(
                 'xiaohongshu.com',
                 'www.xiaohongshu.com'
 
             ),
+            'log_show' => true,
             'log_type' => 'error,debug',
 
             'scan_urls' => array(
