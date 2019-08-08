@@ -33,10 +33,10 @@ class RedbookController  extends Controller
         preg_match_all("/<img([^>]*)\s*src=('|\")([^'\"]+)('|\")/",
             $string,$matches);
         $new_arr=array_unique($matches[3]);
-        foreach($new_arr as $key){
+        /*foreach($new_arr as $key){
             echo "<img src=$key>";
-        }
-       return 'success';
+        }*/
+       return $string;
     }
 }
 
