@@ -1,0 +1,10 @@
+.*
+/vendor/
+composer.lock
+data/ 
+demo/
+cache/
+client.php
+*.bak.php
+
+
