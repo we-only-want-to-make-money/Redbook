@@ -36,14 +36,20 @@ class RedbookController extends Controller
                 /*array(
                     // 抽取内容页的文章内容
                     'name' => "article_content",
-                    'selector' => "//*[@id='single-next-link']",
+                    'selector' => "//div[@class='content']/p",
                     'required' => true
-                ),*/
+                ),
                 array(
                     // 抽取内容页的文章作者
                     'name' => "article_author",
-                    'selector' => "//title",
+                    'selector' => "//h1[contains(@class,'title')]",//div[@class='note-image-container']/img",
                     'required' => true
+                ),*/
+                // 图片
+                array(
+                    'name' => "image",
+                    'selector' => "//ul[@class='slide']//li//span",
+                    'required' => true,
                 ),
             ),
         );
@@ -58,22 +64,11 @@ class RedbookController extends Controller
         };
         $spider->on_extract_field = function ($fieldname, $data, $page) {
             echo "!!!!!!!!!!!!" . $this->myunicode_decode(json_encode($data)) . "!!!!!!!!!!";
-            if ($fieldname == 'gender') {
-                // data中包含"icon-profile-male"，说明当前知乎用户是男性
-                if (strpos($data, "icon-profile-male") !== false) {
-                    return "男";
-                } // data中包含"icon-profile-female"，说明当前知乎用户是女性
-                elseif (strpos($data, "icon-profile-female") !== false) {
-                    return "女";
-                } else {
-                    return "未知";
-                }
-            }
-
             return $data;
         };
         $spider->on_extract_page = function ($page, $data) {
-
+            echo "<" . $data['article_author'] . ">";
+            echo "<!!!!!!".$data['article_content'].">";
         };
         $spider->start();
 
@@ -81,11 +76,11 @@ class RedbookController extends Controller
     }
 
     /**
-     * 23  * unicode 转 utf-8
-     * 24  *
-     * 25  * @param string $name
-     * 26  * @return string
-     * 27  */
+     *   * unicode 转 utf-8
+     *   *
+     *   * @param string $name
+     *   * @return string
+     *   */
     function myunicode_decode($name)
     {
         $name = strtolower($name);
@@ -109,6 +104,7 @@ class RedbookController extends Controller
         }
         return $name;
     }
+
 
     public function actionTest()
     {
@@ -149,27 +145,9 @@ class RedbookController extends Controller
             ),
         );
         $spider = new phpspider($configs);
-        $spider->on_download_attached_page = function ($content, $phpspider) {
-            echo "on_download_attached_page";
-            $content = trim($content);
-            $content = ltrim($content, "[");
-            $content = rtrim($content, "]");
-            $content = json_decode($content, true);
-            return $content;
-        };
         $spider->on_extract_field = function ($fieldname, $data, $page) {
             echo "!!!!!!!!!!!!" . json_encode($data) . "!!!!!!!!!!";
-            if ($fieldname == 'gender') {
-                // data中包含"icon-profile-male"，说明当前知乎用户是男性
-                if (strpos($data, "icon-profile-male") !== false) {
-                    return "男";
-                } // data中包含"icon-profile-female"，说明当前知乎用户是女性
-                elseif (strpos($data, "icon-profile-female") !== false) {
-                    return "女";
-                } else {
-                    return "未知";
-                }
-            }
+
 
             return $data;
         };
