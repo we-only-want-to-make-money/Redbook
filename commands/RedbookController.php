@@ -57,7 +57,7 @@ class RedbookController extends Controller
             return $content;
         };
         $spider->on_extract_field = function ($fieldname, $data, $page) {
-            echo "!!!!!!!!!!!!" . json_encode($data) . "!!!!!!!!!!";
+            echo "!!!!!!!!!!!!" . $this->myunicode_decode(json_encode($data)) . "!!!!!!!!!!";
             if ($fieldname == 'gender') {
                 // data中包含"icon-profile-male"，说明当前知乎用户是男性
                 if (strpos($data, "icon-profile-male") !== false) {
@@ -79,15 +79,37 @@ class RedbookController extends Controller
 
 
     }
-    function decodeUnicode($str)
+
+    /**
+     * 23  * unicode 转 utf-8
+     * 24  *
+     * 25  * @param string $name
+     * 26  * @return string
+     * 27  */
+    function myunicode_decode($name)
     {
-        return preg_replace_callback('/\\\\u([0-9a-f]{4})/i',
-            create_function(
-                '$matches',
-                'return mb_convert_encoding(pack("H*", $matches[1]), "UTF-8", "UCS-2BE");'
-            ),
-            $str);
+        $name = strtolower($name);
+        // 转换编码，将Unicode编码转换成可以浏览的utf-8编码
+        $pattern = '/([\w]+)|(\\\u([\w]{4}))/i';
+        preg_match_all($pattern, $name, $matches);
+        if (!empty($matches)) {
+            $name = '';
+            for ($j = 0; $j < count($matches[0]); $j++) {
+                $str = $matches[0][$j];
+                if (strpos($str, '\\u') === 0) {
+                    $code = base_convert(substr($str, 2, 2), 16, 10);
+                    $code2 = base_convert(substr($str, 4), 16, 10);
+                    $c = chr($code) . chr($code2);
+                    $c = iconv('UCS-2BE', 'UTF-8', $c);
+                    $name .= $c;
+                } else {
+                    $name .= $str;
+                }
+            }
+        }
+        return $name;
     }
+
     public function actionTest()
     {
 
