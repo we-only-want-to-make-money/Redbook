@@ -11,6 +11,12 @@ class RedbookController extends Controller
 {
     public function actionIndex()
     {
+        $url = 'http://t.cn/AiTomEAA';
+        $headers = get_headers($url, TRUE);
+        print_r($headers);
+
+//输出跳转到的网址
+        echo $headers['Location'];
 
         $configs = array(
             'name' => '小红书',
@@ -23,52 +29,53 @@ class RedbookController extends Controller
             'log_type' => 'error,debug',
 
             'scan_urls' => array(
-                'https://www.xiaohongshu.com/discovery/item/5d494d7a000000002801e154'
-
+                //'https://www.xiaohongshu.com/discovery/item/5d494d7a000000002801e154'
+                //'https://www.xiaohongshu.com/discovery/item/5d399207000000002803955d'
+                'http://t.cn/AiTomEAA'
             ),
             'content_url_regexes' => array(
-                "https://www.xiaohongshu.com/discovery/item/5d494d7a000000002801e154"
+                //"https://www.xiaohongshu.com/discovery/item/5d494d7a000000002801e154"
+                //'https://www.xiaohongshu.com/discovery/item/5d399207000000002803955d'
+                'http://t.cn/AiTomEAA'
             ),
-            /*'list_url_regexes' => array(
-                "http://www.qiushibaike.com/8hr/page/\d+\?s=\d+"
-            ),*/
+
             'fields' => array(
-                /*array(
+                array(
                     // 抽取内容页的文章内容
-                    'name' => "article_content",
+                    'name' => "content",
                     'selector' => "//div[@class='content']/p",
-                    'required' => true
+                    'required' => false
                 ),
                 array(
                     // 抽取内容页的文章作者
-                    'name' => "article_author",
+                    'name' => "title",
                     'selector' => "//h1[contains(@class,'title')]",//div[@class='note-image-container']/img",
-                    'required' => true
-                ),*/
+                    'required' => false
+                ),
                 // 图片
                 array(
                     'name' => "image",
-                    'selector' => "//ul[@class='slide']//li//span",
-                    'required' => true,
+                    'selector' => "//ul[@class='slide']//li//span/@style",
+                    'required' => false,
+                    'repeated' => true,
+                ),
+                array(
+                    'name' => "video",
+                    'selector' => "//div[@class='videoframe']/video[@class='videocontent']/@src",
+                    'required' => false,
                 ),
             ),
         );
         $spider = new phpspider($configs);
-        $spider->on_download_attached_page = function ($content, $phpspider) {
-            echo "on_download_attached_page";
-            $content = trim($content);
-            $content = ltrim($content, "[");
-            $content = rtrim($content, "]");
-            $content = json_decode($content, true);
-            return $content;
-        };
-        $spider->on_extract_field = function ($fieldname, $data, $page) {
-            echo "!!!!!!!!!!!!" . $this->myunicode_decode(json_encode($data)) . "!!!!!!!!!!";
-            return $data;
-        };
         $spider->on_extract_page = function ($page, $data) {
-            echo "<" . $data['article_author'] . ">";
-            echo "<!!!!!!".$data['article_content'].">";
+            /*echo "<" . $data['title'] . ">";
+            echo "<".$data['content'].">";*/
+            echo "<" . $data['video'] . ">";
+            /*foreach ($data['image'] as $item){
+                $item=str_replace("background-image:url(//","",$item);
+                $item=str_replace(");","",$item);
+                echo json_encode($item).PHP_EOL;
+            }*/
         };
         $spider->start();
 
