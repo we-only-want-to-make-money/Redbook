@@ -19,7 +19,7 @@ class RedbookController extends Controller
 //输出跳转到的网址
         $url= $headers['Location'];
         $url=substr($url,0,stripos($url, '?'));
-        $productId=substr($url,strrpos($url, '/'));
+        $productId=substr($url,strrpos($url, '/')+1);
         echo 'productId:'.$productId.PHP_EOL;
         //echo $url;
         $configs = array(
@@ -92,11 +92,13 @@ class RedbookController extends Controller
             echo "<".$data['content'].">";*/
             echo "<" . $data['video'] . ">";
             $images=[];
-            foreach ($data['images'] as $item){
-                $item=str_replace("background-image:url(//","",$item);
-                $item=str_replace(");","",$item);
-                //echo json_encode($item).PHP_EOL;
-                $images[]=$item;
+            if($data['images']!=null) {
+                foreach ($data['images'] as $item) {
+                    $item = str_replace("background-image:url(//", "", $item);
+                    $item = str_replace(");", "", $item);
+                    //echo json_encode($item).PHP_EOL;
+                    $images[] = $item;
+                }
             }
             $db_data['content'] = $data['content'];
             $db_data['images'] = json_encode($images);
