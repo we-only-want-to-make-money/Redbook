@@ -31,7 +31,8 @@ class RedbookController extends Controller
             db::_init();
             $doc_data['productId'] = $productId;
             $doc_data['openid'] = "1";
-            db::insert("t_redbook_doc", $doc_data);
+            $docId=db::insert("t_redbook_doc", $doc_data);
+            echo 'docId:  $docId'.PHP_EOL;
             $doc_data=[];
         }
         $configs = array(
