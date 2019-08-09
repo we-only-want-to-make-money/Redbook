@@ -314,7 +314,7 @@ class db
         {
             if (self::query($sql))
             {
-                log::debug("插入数据库成功");
+                echo "插入数据库成功";
                 return mysqli_insert_id(self::$links[self::$link_name]['conn']);
             }
             else
