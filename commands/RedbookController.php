@@ -13,10 +13,10 @@ class RedbookController extends Controller
     {
         $url = 'http://t.cn/AiTomEAA';
         $headers = get_headers($url, TRUE);
-        print_r($headers);
+        //print_r($headers);
 
 //输出跳转到的网址
-        echo $headers['Location'];
+        $url= $headers['Location'];
 
         $configs = array(
             'name' => '小红书',
@@ -31,12 +31,12 @@ class RedbookController extends Controller
             'scan_urls' => array(
                 //'https://www.xiaohongshu.com/discovery/item/5d494d7a000000002801e154'
                 //'https://www.xiaohongshu.com/discovery/item/5d399207000000002803955d'
-                'http://t.cn/AiTomEAA'
+                $url
             ),
             'content_url_regexes' => array(
                 //"https://www.xiaohongshu.com/discovery/item/5d494d7a000000002801e154"
                 //'https://www.xiaohongshu.com/discovery/item/5d399207000000002803955d'
-                'http://t.cn/AiTomEAA'
+                $url
             ),
 
             'fields' => array(
