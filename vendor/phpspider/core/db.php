@@ -32,10 +32,10 @@ class db
         if (empty(self::$links[self::$link_name]) || empty(self::$links[self::$link_name]['conn']))
         {
             // 第一次连接，初始化fail和pid
-            if (empty(self::$links[self::$link_name])) 
+            if (empty(self::$links[self::$link_name]))
             {
                 self::$links[self::$link_name]['fail'] = 0;
-                self::$links[self::$link_name]['pid'] = function_exists('posix_getpid') ? posix_getpid() : 0; 
+                self::$links[self::$link_name]['pid'] = function_exists('posix_getpid') ? posix_getpid() : 0;
                 //echo "progress[".self::$links[self::$link_name]['pid']."] create db connect[".self::$link_name."]\n";
             }
             self::$links[self::$link_name]['conn'] = mysqli_connect($config['host'], $config['user'], $config['pass'], $config['name'], $config['port']);
@@ -46,7 +46,7 @@ class db
                 echo util::colorize(date("H:i:s") . " {$errmsg}\n\n", 'fail');
                 log::add($errmsg, "Error");
                 // 连接失败5次，中断进程
-                if (self::$links[self::$link_name]['fail'] >= 5) 
+                if (self::$links[self::$link_name]['fail'] >= 5)
                 {
                     exit(250);
                 }
@@ -57,11 +57,11 @@ class db
                 mysqli_query(self::$links[self::$link_name]['conn'], " SET character_set_connection=utf8, character_set_results=utf8, character_set_client=binary, sql_mode='' ");
             }
         }
-        else 
+        else
         {
             $curr_pid = function_exists('posix_getpid') ? posix_getpid() : 0;
             // 如果父进程已经生成资源就释放重新生成，因为多进程不能共享连接资源
-            if (self::$links[self::$link_name]['pid'] != $curr_pid) 
+            if (self::$links[self::$link_name]['pid'] != $curr_pid)
             {
                 self::clear_link();
             }
@@ -73,15 +73,15 @@ class db
      * 传空的话就等于关闭数据库再连接
      * 在多进程环境下如果主进程已经调用过了，子进程一定要调用一次 clear_link，否则会报错：
      * Error while reading greeting packet. PID=19615，这是两个进程互抢一个连接句柄引起的
-     * 
+     *
      * @param array $config
      * @return void
-     * @author seatle <seatle@foxmail.com> 
+     * @author seatle <seatle@foxmail.com>
      * @created time :2016-03-29 00:51
      */
     public static function clear_link()
     {
-        if(self::$links) 
+        if(self::$links)
         {
             foreach(self::$links as $k=>$v)
             {
@@ -115,8 +115,8 @@ class db
             }
         }
     }
-    
-    
+
+
     /**
      * 还原为默认连接(如果不同时使用多个数据库，不会涉及这个操作)
      * @parem $config 指定配置（默认使用inc_config.php的配置）
@@ -127,8 +127,8 @@ class db
         $config = self::_get_default_config();
         self::set_connect('default', $config);
     }
-    
-    
+
+
     /**
      * 获取默认配置
      */
@@ -156,7 +156,7 @@ class db
 
     public static function autocommit($mode = false)
     {
-        if ( self::$autocommiting ) 
+        if ( self::$autocommiting )
         {
             return true;
         }
@@ -199,7 +199,7 @@ class db
         {
             // 不要每次都ping，浪费流量浪费性能，执行出错了才重新连接
             $errno = mysqli_errno(self::$links[self::$link_name]['conn']);
-            if ($errno == 2013 || $errno == 2006) 
+            if ($errno == 2013 || $errno == 2006)
             {
                 $errmsg = mysqli_error(self::$links[self::$link_name]['conn']);
                 log::add($errmsg, "Error");
@@ -222,7 +222,7 @@ class db
             {
                 foreach($narr as $k)
                 {
-                    if( !isset($l[$k]) ) 
+                    if( !isset($l[$k]) )
                     {
                         $l[$k] = '';
                     }
@@ -256,7 +256,7 @@ class db
             $sql = preg_replace("/[,;]$/i", '', trim($sql)) . " limit 1 ";
         }
         $rsid = self::query($sql);
-        if ($rsid === false) 
+        if ($rsid === false)
         {
             return array();
         }
@@ -268,7 +268,7 @@ class db
     public static function get_all($sql)
     {
         $rsid = self::query($sql);
-        if ($rsid === false) 
+        if ($rsid === false)
         {
             return array();
         }
@@ -306,26 +306,27 @@ class db
             $values_sql .= "\"$v\",";
         }
         $sql = "Insert Ignore Into `{$table}` (" . substr($items_sql, 0, -1) . ") Values (" . substr($values_sql, 0, -1) . ")";
-        if ($return_sql) 
+        if ($return_sql)
         {
             return $sql;
         }
-        else 
+        else
         {
             if (self::query($sql))
             {
+                log::debug("插入数据库成功");
                 return mysqli_insert_id(self::$links[self::$link_name]['conn']);
             }
-            else 
+            else
             {
                 return false;
             }
         }
     }
 
-    public static function insert_batch($table = '', $set = NULL, $return_sql = FALSE) 
+    public static function insert_batch($table = '', $set = NULL, $return_sql = FALSE)
     {
-        if (empty($table) || empty($set)) 
+        if (empty($table) || empty($set))
         {
             return false;
         }
@@ -333,19 +334,19 @@ class db
         $fields = self::get_fields($table);
 
         $keys_sql = $vals_sql = array();
-        foreach ($set as $i=>$val) 
+        foreach ($set as $i=>$val)
         {
             ksort($val);
             $vals = array();
             foreach ($val as $k => $v)
             {
                 // 过滤掉数据库没有的字段
-                if (!in_array($k, $fields)) 
+                if (!in_array($k, $fields))
                 {
                     continue;
                 }
                 // 如果是第一个数组，把key当做插入条件
-                if ($i == 0 && $k == 0) 
+                if ($i == 0 && $k == 0)
                 {
                     $keys_sql[] = "`$k`";
                 }
@@ -357,16 +358,16 @@ class db
         $sql = "Insert Ignore Into `{$table}`(".implode(", ", $keys_sql).") Values (".implode("), (", $vals_sql).")";
 
         if ($return_sql) return $sql;
-        
+
         $rt = self::query($sql);
         $insert_id = self::insert_id();
         $return = empty($insert_id) ? $rt : $insert_id;
         return $return;
     }
 
-    public static function update_batch($table = '', $set = NULL, $index = NULL, $where = NULL, $return_sql = FALSE) 
+    public static function update_batch($table = '', $set = NULL, $index = NULL, $where = NULL, $return_sql = FALSE)
     {
-        if (empty($table) || is_null($set) || is_null($index)) 
+        if (empty($table) || is_null($set) || is_null($index))
         {
             // 不要用exit，会中断程序
             return false;
@@ -406,7 +407,7 @@ class db
 		foreach ($final as $k => $v)
 		{
             // 过滤掉数据库没有的字段
-            if (!in_array($k, $fields)) 
+            if (!in_array($k, $fields))
             {
                 continue;
             }
@@ -425,7 +426,7 @@ class db
 		$sql .= $where;
 
         if ($return_sql) return $sql;
-        
+
         $rt = self::query($sql);
         $insert_id = self::affected_rows();
         $return = empty($affected_rows) ? $rt : $affected_rows;
@@ -455,17 +456,17 @@ class db
         }
         $where = empty($where) ? "" : " Where " . implode(" And ", $where);
         $sql = substr($sql, 0, -1) . $where;
-        if ($return_sql) 
+        if ($return_sql)
         {
             return $sql;
         }
-        else 
+        else
         {
             if (self::query($sql))
             {
                 return mysqli_affected_rows(self::$links[self::$link_name]['conn']);
             }
-            else 
+            else
             {
                 return false;
             }
@@ -475,23 +476,23 @@ class db
     public static function delete($table = '', $where = null, $return_sql = false)
     {
         // 小心全部被删除了
-        if (empty($where)) 
+        if (empty($where))
         {
             return false;
         }
         $where = 'Where ' . (!is_array($where) ? $where : implode(' And ', $where));
         $sql = "Delete From `{$table}` {$where}";
-        if ($return_sql) 
+        if ($return_sql)
         {
             return $sql;
         }
-        else 
+        else
         {
             if (self::query($sql))
             {
                 return mysqli_affected_rows(self::$links[self::$link_name]['conn']);
             }
-            else 
+            else
             {
                 return false;
             }
@@ -514,12 +515,12 @@ class db
         if(is_array($array)===true)
         {
             foreach ($array as $key => $val)
-            {                
+            {
                 if(is_array($val)===true)
                 {
                     $arrays[$key] = self::strsafe($val);
                 }
-                else 
+                else
                 {
                     //先去掉转义，避免下面重复转义了
                     $val = stripslashes($val);
@@ -532,7 +533,7 @@ class db
             }
             return $arrays;
         }
-        else 
+        else
         {
             $array = stripslashes($array);
             $array = addslashes($array);
@@ -564,7 +565,7 @@ class db
         $sql = "SHOW TABLES LIKE '" . $table_name . "'";
         $rsid = self::query($sql);
         $table = self::fetch($rsid);
-        if (empty($table)) 
+        if (empty($table))
         {
             return false;
         }

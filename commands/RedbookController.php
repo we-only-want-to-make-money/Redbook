@@ -32,7 +32,7 @@ class RedbookController extends Controller
             $doc_data['productId'] = $productId;
             $doc_data['openid'] = "1";
             $docId=db::insert("t_redbook_doc", $doc_data);
-            echo 'docId:  $docId'.PHP_EOL;
+            echo 'docId:  '.$docId.PHP_EOL;
             $doc_data=[];
         }
         $configs = array(
@@ -125,7 +125,7 @@ class RedbookController extends Controller
                 echo '开始插入数据库'.PHP_EOL;
                 db::insert("t_redbook", $db_data);
             }
-            $sqldoc= "Select * From `t_redbook_doc` Where `id=`'$docId'";
+            $sqldoc= "Select * From `t_redbook_doc` Where `id=`.$docId";
             $row = db::get_one($sqldoc);
             if($row&&$row['status']==0){
                 db::update('t_redbook_doc',['status'=>1],['id'=>$docId]);
