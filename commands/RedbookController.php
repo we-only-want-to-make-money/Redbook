@@ -3,6 +3,7 @@
 
 namespace app\commands;
 
+use phpspider\core\db;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use phpspider\core\phpspider;
@@ -18,6 +19,8 @@ class RedbookController extends Controller
 //输出跳转到的网址
         $url= $headers['Location'];
         $url=substr($url,0,stripos($url, '?'));
+        $productId=substr($url,strrpos($url, '/'));
+        echo 'productId:'.$productId.PHP_EOL;
         //echo $url;
         $configs = array(
             'name' => '小红书',
@@ -39,7 +42,13 @@ class RedbookController extends Controller
                 //'https://www.xiaohongshu.com/discovery/item/5d399207000000002803955d'
                 $url
             ),
-
+            'db_config' => array(
+                'host'  => '127.0.0.1',
+                'port'  => 3306,
+                'user'  => 'root',
+                'pass'  => 'hzdz20190424',
+                'name'  => 'crawler',
+            ),
             'fields' => array(
                 array(
                     // 抽取内容页的文章内容
@@ -55,7 +64,7 @@ class RedbookController extends Controller
                 ),
                 // 图片
                 array(
-                    'name' => "image",
+                    'name' => "images",
                     'selector' => "//ul[@class='slide']//li//span/@style",
                     'required' => false,
                     'repeated' => true,
@@ -68,15 +77,40 @@ class RedbookController extends Controller
             ),
         );
         $spider = new phpspider($configs);
-        $spider->on_extract_page = function ($page, $data) {
+        $spider->on_start = function($phpspider)
+        {
+            $db_config = $phpspider->get_config("db_config");
+            //print_r($db_config);
+            //exit;
+            // 数据库连接
+            db::set_connect('default', $db_config);
+            db::_init();
+        };
+
+        $spider->on_extract_page = function ($page, $data)use($productId) {
             /*echo "<" . $data['title'] . ">";
             echo "<".$data['content'].">";*/
             echo "<" . $data['video'] . ">";
-            /*foreach ($data['image'] as $item){
+            $images=[];
+            foreach ($data['images'] as $item){
                 $item=str_replace("background-image:url(//","",$item);
                 $item=str_replace(");","",$item);
-                echo json_encode($item).PHP_EOL;
-            }*/
+                //echo json_encode($item).PHP_EOL;
+                $images[]=$item;
+            }
+            $db_data['content'] = $data['content'];
+            $db_data['images'] = json_encode($images);
+            $db_data['title'] =$data['title'];
+            $db_data['video'] =$data['video'];
+            $db_data['productId'] =$productId;
+            $sql = "Select Count(*) As `count` From `t_redbook` Where `productId`='$productId'";
+            $row = db::get_one($sql);
+            if (!$row['count'])
+            {
+                echo '开始插入数据库'.PHP_EOL;
+                db::insert("t_redbook", $db_data);
+            }
+            return $data;
         };
         $spider->start();
 
