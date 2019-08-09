@@ -12,7 +12,8 @@ class RedbookController extends Controller
 {
     public function actionIndex($docId)
     {
-
+        echo microtime()*1000;
+        exit();
         $url = 'http://t.cn/AiTomEAA';
         $headers = get_headers($url, TRUE);
         //输出跳转到的网址
@@ -29,6 +30,7 @@ class RedbookController extends Controller
         );
             db::set_connect('default', $db_config);
             db::_init();
+            $doc_data['id']=microtime()*1000;
             $doc_data['productId'] = $productId;
             $doc_data['openid'] = "1";
             $docId=db::insert("t_redbook_doc", $doc_data);
