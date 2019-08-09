@@ -17,7 +17,8 @@ class RedbookController extends Controller
 
 //输出跳转到的网址
         $url= $headers['Location'];
-
+        $url=substr($url,0,stripos($url, '?'));
+        //echo $url;
         $configs = array(
             'name' => '小红书',
             'domains' => array(
