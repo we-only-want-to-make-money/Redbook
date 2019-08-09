@@ -10,18 +10,30 @@ use phpspider\core\phpspider;
 
 class RedbookController extends Controller
 {
-    public function actionIndex()
+    public function actionIndex($docId)
     {
+
         $url = 'http://t.cn/AiTomEAA';
         $headers = get_headers($url, TRUE);
-        //print_r($headers);
-
-//输出跳转到的网址
+        //输出跳转到的网址
         $url= $headers['Location'];
         $url=substr($url,0,stripos($url, '?'));
         $productId=substr($url,strrpos($url, '/')+1);
-        echo 'productId:'.$productId.PHP_EOL;
-        //echo $url;
+        {
+            $db_config = array(
+            'host'  => '127.0.0.1',
+            'port'  => 3306,
+            'user'  => 'root',
+            'pass'  => 'hzdz20190424',
+            'name'  => 'crawler',
+        );
+            db::set_connect('default', $db_config);
+            db::_init();
+            $doc_data['productId'] = $productId;
+            $doc_data['openid'] = "1";
+            db::insert("t_redbook_doc", $doc_data);
+            $doc_data=[];
+        }
         $configs = array(
             'name' => '小红书',
             'domains' => array(
@@ -87,7 +99,7 @@ class RedbookController extends Controller
             db::_init();
         };
 
-        $spider->on_extract_page = function ($page, $data)use($productId) {
+        $spider->on_extract_page = function ($page, $data)use($productId,$docId) {
             /*echo "<" . $data['title'] . ">";
             echo "<".$data['content'].">";*/
             echo "<" . $data['video'] . ">";
@@ -111,6 +123,11 @@ class RedbookController extends Controller
             {
                 echo '开始插入数据库'.PHP_EOL;
                 db::insert("t_redbook", $db_data);
+            }
+            $sqldoc= "Select * From `t_redbook_doc` Where `id=`'$docId'";
+            $row = db::get_one($sqldoc);
+            if($row&&$row['status']==0){
+                db::update('t_redbook_doc',['status'=>1],['id'=>$docId]);
             }
             return $data;
         };
