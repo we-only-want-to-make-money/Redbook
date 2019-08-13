@@ -142,7 +142,7 @@ class RedbookController extends Controller
             if (isset($data['content'])) {
                 //echo "<".$data['content'].">";
                 $dowloadFile = fopen("/home/wwwroot/default/downloads/" . $sessionId . ".txt", "w");
-                $txt = $data['content'];
+                $txt = json_encode($data['content']);
                 fwrite($dowloadFile, $txt);
                 fclose($dowloadFile);
             }
