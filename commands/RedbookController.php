@@ -140,7 +140,7 @@ class RedbookController extends Controller
                 echo "<" . 'https://'.$data['video'] . ">";
                 $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId.".txt", "w");
                 //$txt = $data['video'];
-                $data['video']='https://'.$data['video'];
+                $data['video'] = str_replace("http", "https", $data['video']);
                 fwrite($dowloadFile, json_encode($data));
                 fclose($dowloadFile);
             }
