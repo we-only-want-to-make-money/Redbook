@@ -19,21 +19,21 @@ class RedbookController extends Controller
         $url=substr($url,0,stripos($url, '?'));
         $productId=substr($url,strrpos($url, '/')+1);
         $files=[];
-        if($type=0){
+        if($type==0){
             $files[]=array(
                 'name' => "images",
                 'selector' => "//ul[@class='slide']//li//span/@style",
                 'required' => false,
                 'repeated' => true,
             );
-        }else if($type=1){
+        }else if($type==1){
             $files[]=   array(
                 // 抽取内容页的文章内容
                 'name' => "content",
                 'selector' => "//div[@class='content']/p",
                 'required' => false
             );
-        }else if($type=2){
+        }else if($type==2){
             $files[]=array(
                 'name' => "video",
                 'selector' => "//div[@class='videoframe']/video[@class='videocontent']/@src",
