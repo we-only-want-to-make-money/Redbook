@@ -22,7 +22,7 @@ class RedbookController extends Controller
 
     public function actionIndex($action, $sessionId, $url, $type)
     {
-        \Yii::warning("actionIndex");
+        \Yii::warning("url:".$url);
         //$url = 'http://t.cn/AiTomEAA';
         $headers = get_headers($url, TRUE);
         //输出跳转到的网址
