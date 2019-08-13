@@ -10,7 +10,7 @@ use phpspider\core\phpspider;
 
 class RedbookController extends Controller
 {
-    public function actionIndex($action,$docId,$url,$type)
+    public function actionIndex($action,$sessionId,$url,$type)
     {
         //$url = 'http://t.cn/AiTomEAA';
         $headers = get_headers($url, TRUE);
@@ -125,19 +125,30 @@ class RedbookController extends Controller
             db::_init();
         };
 
-        $spider->on_extract_page = function ($page, $data)use($productId,$docId) {
+        $spider->on_extract_page = function ($page, $data)use($productId,$sessionId) {
             if(isset($data['title'])){
                 echo "<" . $data['title'] . ">";
             }
             if(isset($data['content'])){
                 echo "<".$data['content'].">";
+                $dowloadFile = fopen("/home/wwwroot/default/".$sessionId."txt", "w");
+                $txt = $data['content'];
+                fwrite($dowloadFile, $txt);
+                fclose($dowloadFile);
             }
             if(isset($data['video'])){
                 echo "<" . 'https://'.$data['video'] . ">";
+                $dowloadFile = fopen("/home/wwwroot/default/".$sessionId."txt", "w");
+                $txt = $data['video'];
+                fwrite($dowloadFile, $txt);
+                fclose($dowloadFile);
             }
             if(isset($data['poster'])){
                 echo "<" . $data['poster'] . ">";
-
+                $dowloadFile = fopen("/home/wwwroot/default/".$sessionId."txt", "w");
+                $txt = $data['video'];
+                fwrite($dowloadFile, $txt);
+                fclose($dowloadFile);
             }
            /* echo "<" . $data['title'] . ">";
             echo "<".$data['content'].">";
@@ -153,6 +164,10 @@ class RedbookController extends Controller
                 }
                 if($data['images']){
                     echo json_encode($images);
+                    $dowloadFile = fopen("/home/wwwroot/default/".$sessionId."txt", "w");
+                    $txt = json_encode($images);
+                    fwrite($dowloadFile, $txt);
+                    fclose($dowloadFile);
                 }
             }
             //echo json_encode($images);
