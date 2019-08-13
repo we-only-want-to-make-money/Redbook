@@ -41,12 +41,11 @@ class RedbookController extends Controller
                 'required' => false,
             );
             $files[]=array(
-                'name' => "poster",
+                'name' => "lunimg",
                 'selector' => "//div[@class='videoframe']/video[@class='videocontent']/@poster",
                 'required' => false,
             );
         }
-        echo  json_encode($files);
         {
             $db_config = array(
             'host'  => '127.0.0.1',
@@ -128,17 +127,17 @@ class RedbookController extends Controller
 
         $spider->on_extract_page = function ($page, $data)use($productId,$sessionId) {
             if(isset($data['title'])){
-                echo "<" . $data['title'] . ">";
+                //echo "<" . $data['title'] . ">";
             }
             if(isset($data['content'])){
-                echo "<".$data['content'].">";
+                //echo "<".$data['content'].">";
                 $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId.".txt", "w");
                 $txt = $data['content'];
                 fwrite($dowloadFile, $txt);
                 fclose($dowloadFile);
             }
             if(isset($data['video'])){
-                echo "<" . 'https://'.$data['video'] . ">";
+                //echo "<" . 'https://'.$data['video'] . ">";
                 $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId.".txt", "w");
                 //$txt = $data['video'];
                 $data['video'] = str_replace("http", "https", $data['video']);
@@ -165,7 +164,7 @@ class RedbookController extends Controller
                     $images[] = $item;
                 }
                 if($data['images']){
-                    echo json_encode($images);
+                    //echo json_encode($images);
                     $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId.".txt", "w");
                     $txt = json_encode($images);
                     fwrite($dowloadFile, $txt);
