@@ -114,6 +114,7 @@ class RedbookController extends Controller
                 foreach ($data['images'] as $item) {
                     $item = str_replace("background-image:url(//", "", $item);
                     $item = str_replace(");", "", $item);
+                    $item = 'https://'.$item;
                     //echo json_encode($item).PHP_EOL;
                     $images[] = $item;
                 }
