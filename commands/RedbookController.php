@@ -42,7 +42,8 @@ class RedbookController extends Controller
                 // 抽取内容页的文章内容
                 'name' => "content",
                 'selector' => "//div[@class='content']/p",
-                'required' => false
+                'required' => false,
+                'repeated' => true,
             );
         } else if ($type == 2) {
             $files[] = array(
