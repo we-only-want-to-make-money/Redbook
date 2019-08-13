@@ -10,7 +10,7 @@ use phpspider\core\phpspider;
 
 class RedbookController extends Controller
 {
-    public function actionIndex($docId,$url)
+    public function actionIndex($action,$docId,$url)
     {
         //$url = 'http://t.cn/AiTomEAA';
         $headers = get_headers($url, TRUE);
