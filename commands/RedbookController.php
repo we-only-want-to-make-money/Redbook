@@ -10,37 +10,51 @@ use phpspider\core\phpspider;
 
 class RedbookController extends Controller
 {
-    public function actionIndex($action,$sessionId,$url,$type)
+    public function actionVideo()
+    {
+
+// 告知文件类型，可以不写
+        header("Content-Type: video/mp4");
+// attachment表明需要下载，filename是文件名
+        header("Content-Disposition: attachment;filename=qwe.mp4");
+// echo '1.mp4';
+// 读取视频
+        $movie = file_get_contents("http://v.xiaohongshu.com/23237a577db9f8c168c49652da23b68b06656cfa?sign=1a0ddaaec06177b488d7365b9824a5fe&t=5d543000");
+// 以流的形式输出到客户端进行保存
+        echo $movie;
+    }
+
+    public function actionIndex($action, $sessionId, $url, $type)
     {
         \Yii::warning("actionIndex");
         //$url = 'http://t.cn/AiTomEAA';
         $headers = get_headers($url, TRUE);
         //输出跳转到的网址
-        $url= $headers['Location'];
-        $url=substr($url,0,stripos($url, '?'));
-        $productId=substr($url,strrpos($url, '/')+1);
-        $files=[];
-        if($type==0){
-            $files[]=array(
+        $url = $headers['Location'];
+        $url = substr($url, 0, stripos($url, '?'));
+        $productId = substr($url, strrpos($url, '/') + 1);
+        $files = [];
+        if ($type == 0) {
+            $files[] = array(
                 'name' => "images",
                 'selector' => "//ul[@class='slide']//li//span/@style",
                 'required' => false,
                 'repeated' => true,
             );
-        }else if($type==1){
-            $files[]=   array(
+        } else if ($type == 1) {
+            $files[] = array(
                 // 抽取内容页的文章内容
                 'name' => "content",
                 'selector' => "//div[@class='content']/p",
                 'required' => false
             );
-        }else if($type==2){
-            $files[]=array(
+        } else if ($type == 2) {
+            $files[] = array(
                 'name' => "video",
                 'selector' => "//div[@class='videoframe']/video[@class='videocontent']/@src",
                 'required' => false,
             );
-            $files[]=array(
+            $files[] = array(
                 'name' => "lunimg",
                 'selector' => "//div[@class='videoframe']/video[@class='videocontent']/@poster",
                 'required' => false,
@@ -48,12 +62,12 @@ class RedbookController extends Controller
         }
         {
             $db_config = array(
-            'host'  => '127.0.0.1',
-            'port'  => 3306,
-            'user'  => 'root',
-            'pass'  => 'hzdz20190424',
-            'name'  => 'crawler',
-        );
+                'host' => '127.0.0.1',
+                'port' => 3306,
+                'user' => 'root',
+                'pass' => 'hzdz20190424',
+                'name' => 'crawler',
+            );
             /*db::set_connect('default', $db_config);
             db::_init();
             $doc_data['id']=microtime()*1000;
@@ -80,11 +94,11 @@ class RedbookController extends Controller
                 $url
             ),
             'db_config' => array(
-                'host'  => '127.0.0.1',
-                'port'  => 3306,
-                'user'  => 'root',
-                'pass'  => 'hzdz20190424',
-                'name'  => 'crawler',
+                'host' => '127.0.0.1',
+                'port' => 3306,
+                'user' => 'root',
+                'pass' => 'hzdz20190424',
+                'name' => 'crawler',
             ),
             'fields' => $files,
             /*array(
@@ -115,8 +129,7 @@ class RedbookController extends Controller
             ),*/
         );
         $spider = new phpspider($configs);
-        $spider->on_start = function($phpspider)
-        {
+        $spider->on_start = function ($phpspider) {
             $db_config = $phpspider->get_config("db_config");
             //print_r($db_config);
             //exit;
@@ -125,20 +138,20 @@ class RedbookController extends Controller
             db::_init();
         };
 
-        $spider->on_extract_page = function ($page, $data)use($productId,$sessionId) {
-            if(isset($data['title'])){
+        $spider->on_extract_page = function ($page, $data) use ($productId, $sessionId) {
+            if (isset($data['title'])) {
                 //echo "<" . $data['title'] . ">";
             }
-            if(isset($data['content'])){
+            if (isset($data['content'])) {
                 //echo "<".$data['content'].">";
-                $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId.".txt", "w");
+                $dowloadFile = fopen("/home/wwwroot/default/downloads/" . $sessionId . ".txt", "w");
                 $txt = $data['content'];
                 fwrite($dowloadFile, $txt);
                 fclose($dowloadFile);
             }
-            if(isset($data['video'])){
+            if (isset($data['video'])) {
                 //echo "<" . 'https://'.$data['video'] . ">";
-                $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId.".txt", "w");
+                $dowloadFile = fopen("/home/wwwroot/default/downloads/" . $sessionId . ".txt", "w");
                 //$txt = $data['video'];
                 $data['video'] = str_replace("http", "https", $data['video']);
                 fwrite($dowloadFile, json_encode($data));
@@ -151,21 +164,21 @@ class RedbookController extends Controller
                 fwrite($dowloadFile, $txt);
                 fclose($dowloadFile);
             }*/
-           /* echo "<" . $data['title'] . ">";
-            echo "<".$data['content'].">";
-            echo "<" . $data['video'] . ">";*/
-            $images=[];
-            if(isset($data['images'])) {
+            /* echo "<" . $data['title'] . ">";
+             echo "<".$data['content'].">";
+             echo "<" . $data['video'] . ">";*/
+            $images = [];
+            if (isset($data['images'])) {
                 foreach ($data['images'] as $item) {
                     $item = str_replace("background-image:url(//", "", $item);
                     $item = str_replace(");", "", $item);
-                    $item = 'https://'.$item;
+                    $item = 'https://' . $item;
                     //echo json_encode($item).PHP_EOL;
                     $images[] = $item;
                 }
-                if($data['images']){
+                if ($data['images']) {
                     //echo json_encode($images);
-                    $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId.".txt", "w");
+                    $dowloadFile = fopen("/home/wwwroot/default/downloads/" . $sessionId . ".txt", "w");
                     $txt = json_encode($images);
                     fwrite($dowloadFile, $txt);
                     fclose($dowloadFile);
@@ -173,23 +186,23 @@ class RedbookController extends Controller
             }
             //echo json_encode($images);
 
-           /* $db_data['content'] = $data['content'];
-            $db_data['images'] = json_encode($images);
-            $db_data['title'] =$data['title'];
-            $db_data['video'] =$data['video'];
-            $db_data['productId'] =$productId;
-            $sql = "Select Count(*) As `count` From `t_redbook` Where `productId`='$productId'";
-            $row = db::get_one($sql);
-            if (!$row['count'])
-            {
-                echo '开始插入数据库'.PHP_EOL;
-                db::insert("t_redbook", $db_data);
-            }
-            $sqldoc= "Select * From `t_redbook_doc` Where `id=`.$docId";
-            $row = db::get_one($sqldoc);
-            if($row&&$row['status']==0){
-                db::update('t_redbook_doc',['status'=>1],['id'=>$docId]);
-            }*/
+            /* $db_data['content'] = $data['content'];
+             $db_data['images'] = json_encode($images);
+             $db_data['title'] =$data['title'];
+             $db_data['video'] =$data['video'];
+             $db_data['productId'] =$productId;
+             $sql = "Select Count(*) As `count` From `t_redbook` Where `productId`='$productId'";
+             $row = db::get_one($sql);
+             if (!$row['count'])
+             {
+                 echo '开始插入数据库'.PHP_EOL;
+                 db::insert("t_redbook", $db_data);
+             }
+             $sqldoc= "Select * From `t_redbook_doc` Where `id=`.$docId";
+             $row = db::get_one($sqldoc);
+             if($row&&$row['status']==0){
+                 db::update('t_redbook_doc',['status'=>1],['id'=>$docId]);
+             }*/
             return $data;
         };
         $spider->start();
@@ -226,7 +239,6 @@ class RedbookController extends Controller
         }
         return $name;
     }
-
 
 
 }
