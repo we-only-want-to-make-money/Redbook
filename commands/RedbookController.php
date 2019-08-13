@@ -16,7 +16,7 @@ class RedbookController extends Controller
         header("Content-Disposition: attachment;filename=qwe.mp4");
 
         $movie = file_get_contents("http://v.xiaohongshu.com/23237a577db9f8c168c49652da23b68b06656cfa?sign=1a0ddaaec06177b488d7365b9824a5fe&t=5d543000");
-        return strlen($movie)/1024/1024;
+        echo strlen($movie)/1024/1024;
 
     }
 
