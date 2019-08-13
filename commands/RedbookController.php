@@ -45,6 +45,7 @@ class RedbookController extends Controller
                 'required' => false,
             );
         }
+        echo  json_encode($files)
         {
             $db_config = array(
             'host'  => '127.0.0.1',
