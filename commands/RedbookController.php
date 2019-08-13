@@ -177,7 +177,7 @@ class RedbookController extends Controller
                 if ($data['images']) {
                     //echo json_encode($images);
                     $dowloadFile = fopen("/home/wwwroot/default/downloads/" . $sessionId . ".txt", "w");
-                    $txt = json_encode($images);
+                    $txt = $this->myunicode_decode(json_encode($images));
                     fwrite($dowloadFile, $txt);
                     fclose($dowloadFile);
                 }
