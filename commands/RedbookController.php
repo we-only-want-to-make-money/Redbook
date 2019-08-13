@@ -10,7 +10,7 @@ use phpspider\core\phpspider;
 
 class RedbookController extends Controller
 {
-    public function actionIndex($action,$docId,$url)
+    public function actionIndex($action,$docId,$url,$type)
     {
         //$url = 'http://t.cn/AiTomEAA';
         $headers = get_headers($url, TRUE);
@@ -18,6 +18,33 @@ class RedbookController extends Controller
         $url= $headers['Location'];
         $url=substr($url,0,stripos($url, '?'));
         $productId=substr($url,strrpos($url, '/')+1);
+        $files=[];
+        if($type=0){
+            $files[]=array(
+                'name' => "images",
+                'selector' => "//ul[@class='slide']//li//span/@style",
+                'required' => false,
+                'repeated' => true,
+            );
+        }else if($type=1){
+            $files[]=   array(
+                // 抽取内容页的文章内容
+                'name' => "content",
+                'selector' => "//div[@class='content']/p",
+                'required' => false
+            );
+        }else if($type=2){
+            $files[]=array(
+                'name' => "video",
+                'selector' => "//div[@class='videoframe']/video[@class='videocontent']/@src",
+                'required' => false,
+            );
+            $files[]=array(
+                'name' => "poster",
+                'selector' => "//div[@class='videoframe']/video[@class='videocontent']/@poster",
+                'required' => false,
+            );
+        }
         {
             $db_config = array(
             'host'  => '127.0.0.1',
@@ -58,7 +85,8 @@ class RedbookController extends Controller
                 'pass'  => 'hzdz20190424',
                 'name'  => 'crawler',
             ),
-            'fields' => array(
+            'fields' => $files,
+            /*array(
                 array(
                     // 抽取内容页的文章内容
                     'name' => "content",
@@ -83,7 +111,7 @@ class RedbookController extends Controller
                     'selector' => "//div[@class='videoframe']/video[@class='videocontent']/@src",
                     'required' => false,
                 ),
-            ),
+            ),*/
         );
         $spider = new phpspider($configs);
         $spider->on_start = function($phpspider)
@@ -104,11 +132,15 @@ class RedbookController extends Controller
                 echo "<".$data['content'].">";
             }
             if($data['video']){
-                echo "<" . $data['video'] . ">";
+                echo "<" . 'https://'.$data['video'] . ">";
             }
-            echo "<" . $data['title'] . ">";
+            if($data['poster']){
+                echo "<" . $data['poster'] . ">";
+
+            }
+           /* echo "<" . $data['title'] . ">";
             echo "<".$data['content'].">";
-            echo "<" . $data['video'] . ">";
+            echo "<" . $data['video'] . ">";*/
             $images=[];
             if($data['images']!=null) {
                 foreach ($data['images'] as $item) {
