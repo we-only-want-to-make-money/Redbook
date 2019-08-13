@@ -10,14 +10,14 @@ use phpspider\core\phpspider;
 
 class RedbookController extends Controller
 {
-    public function actionVideo()
+    public function getVideoSize($url)
     {
         header("Content-Type: video/mp4");
         header("Content-Disposition: attachment;filename=qwe.mp4");
 
-        $movie = file_get_contents("http://v.xiaohongshu.com/23237a577db9f8c168c49652da23b68b06656cfa?sign=1a0ddaaec06177b488d7365b9824a5fe&t=5d543000");
+        $movie = file_get_contents($url);
         $format_num = sprintf("%.2f",strlen($movie)/1024/1024);
-        echo $format_num; //10.46
+        return $format_num; //10.46
     }
 
     public function actionIndex($action, $sessionId, $url, $type)
@@ -150,6 +150,7 @@ class RedbookController extends Controller
                 $dowloadFile = fopen("/home/wwwroot/default/downloads/" . $sessionId . ".txt", "w");
                 //$txt = $data['video'];
                 $data['video'] = str_replace("http", "https", $data['video']);
+                $data['size'] =$this->getVideoSize($data['video']);
                 fwrite($dowloadFile, json_encode($data));
                 fclose($dowloadFile);
             }
