@@ -12,19 +12,12 @@ class RedbookController extends Controller
 {
     public function actionVideo()
     {
-
-// 告知文件类型，可以不写
         header("Content-Type: video/mp4");
-// attachment表明需要下载，filename是文件名
         header("Content-Disposition: attachment;filename=qwe.mp4");
-// echo '1.mp4';
-// 读取视频
+
         $movie = file_get_contents("http://v.xiaohongshu.com/23237a577db9f8c168c49652da23b68b06656cfa?sign=1a0ddaaec06177b488d7365b9824a5fe&t=5d543000");
-        //$size=filesize($movie);
-        //$file = file_get_contents("http://v.xiaohongshu.com/23237a577db9f8c168c49652da23b68b06656cfa?sign=1a0ddaaec06177b488d7365b9824a5fe&t=5d543000"));
-        echo strlen($movie);
-// 以流的形式输出到客户端进行保存
-        //echo $size;
+        return strlen($movie)/1024/1024;
+
     }
 
     public function actionIndex($action, $sessionId, $url, $type)
