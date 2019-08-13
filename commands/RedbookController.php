@@ -167,6 +167,7 @@ class RedbookController extends Controller
              echo "<" . $data['video'] . ">";*/
             $images = [];
             if (isset($data['images'])) {
+                \Yii::warning(json_encode($data['images']));
                 foreach ($data['images'] as $item) {
                     $item = str_replace("background-image:url(//", "", $item);
                     $item = str_replace(");", "", $item);
