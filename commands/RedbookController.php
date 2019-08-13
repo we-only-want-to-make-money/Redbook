@@ -10,11 +10,9 @@ use phpspider\core\phpspider;
 
 class RedbookController extends Controller
 {
-    public function actionIndex($docId)
+    public function actionIndex($docId,$url)
     {
-        echo round(microtime(true) * 1000);
-        exit();
-        $url = 'http://t.cn/AiTomEAA';
+        //$url = 'http://t.cn/AiTomEAA';
         $headers = get_headers($url, TRUE);
         //输出跳转到的网址
         $url= $headers['Location'];
@@ -28,14 +26,14 @@ class RedbookController extends Controller
             'pass'  => 'hzdz20190424',
             'name'  => 'crawler',
         );
-            db::set_connect('default', $db_config);
+            /*db::set_connect('default', $db_config);
             db::_init();
             $doc_data['id']=microtime()*1000;
             $doc_data['productId'] = $productId;
             $doc_data['openid'] = "1";
             $docId=db::insert("t_redbook_doc", $doc_data);
             echo 'docId:  '.$docId.PHP_EOL;
-            $doc_data=[];
+            $doc_data=[];*/
         }
         $configs = array(
             'name' => '小红书',
@@ -48,13 +46,9 @@ class RedbookController extends Controller
             'log_type' => 'error,debug',
 
             'scan_urls' => array(
-                //'https://www.xiaohongshu.com/discovery/item/5d494d7a000000002801e154'
-                //'https://www.xiaohongshu.com/discovery/item/5d399207000000002803955d'
                 $url
             ),
             'content_url_regexes' => array(
-                //"https://www.xiaohongshu.com/discovery/item/5d494d7a000000002801e154"
-                //'https://www.xiaohongshu.com/discovery/item/5d399207000000002803955d'
                 $url
             ),
             'db_config' => array(
@@ -103,8 +97,17 @@ class RedbookController extends Controller
         };
 
         $spider->on_extract_page = function ($page, $data)use($productId,$docId) {
-            /*echo "<" . $data['title'] . ">";
-            echo "<".$data['content'].">";*/
+            if($data['title']){
+                echo "<" . $data['title'] . ">";
+            }
+            if($data['content']){
+                echo "<".$data['content'].">";
+            }
+            if($data['video']){
+                echo "<" . $data['video'] . ">";
+            }
+            echo "<" . $data['title'] . ">";
+            echo "<".$data['content'].">";
             echo "<" . $data['video'] . ">";
             $images=[];
             if($data['images']!=null) {
@@ -114,8 +117,13 @@ class RedbookController extends Controller
                     //echo json_encode($item).PHP_EOL;
                     $images[] = $item;
                 }
+                if($data['images']){
+                    echo json_encode($images);
+                }
             }
-            $db_data['content'] = $data['content'];
+            //echo json_encode($images);
+
+           /* $db_data['content'] = $data['content'];
             $db_data['images'] = json_encode($images);
             $db_data['title'] =$data['title'];
             $db_data['video'] =$data['video'];
@@ -131,7 +139,7 @@ class RedbookController extends Controller
             $row = db::get_one($sqldoc);
             if($row&&$row['status']==0){
                 db::update('t_redbook_doc',['status'=>1],['id'=>$docId]);
-            }
+            }*/
             return $data;
         };
         $spider->start();
@@ -170,56 +178,5 @@ class RedbookController extends Controller
     }
 
 
-    public function actionTest()
-    {
 
-        $configs = array(
-            'name' => '糗事百科',
-            'domains' => array(
-                /*'xiaohongshu.com',
-                'www.xiaohongshu.com'*/
-                'shcydy.com',
-                'www.shcydy.com'
-            ),
-            'log_type' => 'error,debug',
-
-            'scan_urls' => array(
-                // 'https://www.xiaohongshu.com/discovery/item/5d494d7a000000002801e154?xhsshare=CopyLink&appuid=5c0a053e000000000500b9f2&apptime=1565158031'
-                'http://www.shcydy.com/'
-            ),
-            /*'content_url_regexes' => array(
-                "https://www.xiaohongshu.com/discovery/item/5d494d7a000000002801e154?xhsshare=CopyLink&appuid=5c0a053e000000000500b9f2&apptime=1565158031"
-            ),*/
-            /*'list_url_regexes' => array(
-                "http://www.qiushibaike.com/8hr/page/\d+\?s=\d+"
-            ),*/
-            'fields' => array(
-                /*array(
-                    // 抽取内容页的文章内容
-                    'name' => "article_content",
-                    'selector' => "//*[@id='single-next-link']",
-                    'required' => true
-                ),*/
-                array(
-                    // 抽取内容页的文章作者
-                    'name' => "article_author",
-                    'selector' => "//title",
-                    'required' => true
-                ),
-            ),
-        );
-        $spider = new phpspider($configs);
-        $spider->on_extract_field = function ($fieldname, $data, $page) {
-            echo "!!!!!!!!!!!!" . json_encode($data) . "!!!!!!!!!!";
-
-
-            return $data;
-        };
-        $spider->on_extract_page = function ($page, $data) {
-
-        };
-        $spider->start();
-
-
-    }
 }
