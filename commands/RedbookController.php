@@ -125,16 +125,16 @@ class RedbookController extends Controller
         };
 
         $spider->on_extract_page = function ($page, $data)use($productId,$docId) {
-            if($data['title']){
+            if(isset($data['title'])){
                 echo "<" . $data['title'] . ">";
             }
-            if($data['content']){
+            if(isset($data['content'])){
                 echo "<".$data['content'].">";
             }
-            if($data['video']){
+            if(isset($data['video'])){
                 echo "<" . 'https://'.$data['video'] . ">";
             }
-            if($data['poster']){
+            if(isset($data['poster'])){
                 echo "<" . $data['poster'] . ">";
 
             }
@@ -142,7 +142,7 @@ class RedbookController extends Controller
             echo "<".$data['content'].">";
             echo "<" . $data['video'] . ">";*/
             $images=[];
-            if($data['images']!=null) {
+            if(isset($data['images'])) {
                 foreach ($data['images'] as $item) {
                     $item = str_replace("background-image:url(//", "", $item);
                     $item = str_replace(");", "", $item);
