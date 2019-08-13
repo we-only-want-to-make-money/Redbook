@@ -12,8 +12,8 @@ class RedbookController extends Controller
 {
     public function getVideoSize($url)
     {
-        header("Content-Type: video/mp4");
-        header("Content-Disposition: attachment;filename=qwe.mp4");
+        /*header("Content-Type: video/mp4");
+        header("Content-Disposition: attachment;filename=qwe.mp4");*/
 
         $movie = file_get_contents($url);
         $format_num = sprintf("%.2f",strlen($movie)/1024/1024);
