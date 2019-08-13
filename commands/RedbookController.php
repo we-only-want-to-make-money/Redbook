@@ -20,7 +20,7 @@ class RedbookController extends Controller
 // echo '1.mp4';
 // 读取视频
         $movie = file_get_contents("http://v.xiaohongshu.com/23237a577db9f8c168c49652da23b68b06656cfa?sign=1a0ddaaec06177b488d7365b9824a5fe&t=5d543000");
-        $size=filesize($movie);
+        //$size=filesize($movie);
         //$file = file_get_contents("http://v.xiaohongshu.com/23237a577db9f8c168c49652da23b68b06656cfa?sign=1a0ddaaec06177b488d7365b9824a5fe&t=5d543000"));
         echo strlen($movie);
 // 以流的形式输出到客户端进行保存
