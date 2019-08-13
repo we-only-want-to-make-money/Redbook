@@ -140,6 +140,7 @@ class RedbookController extends Controller
                 echo "<" . 'https://'.$data['video'] . ">";
                 $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId.".txt", "w");
                 //$txt = $data['video'];
+                $data['video']='https://'.$data['video'];
                 fwrite($dowloadFile, json_encode($data));
                 fclose($dowloadFile);
             }
@@ -164,7 +165,7 @@ class RedbookController extends Controller
                 }
                 if($data['images']){
                     echo json_encode($images);
-                    $dowloadFile = fopen("/home/wwwroot/default/".$sessionId."txt", "w");
+                    $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId."txt", "w");
                     $txt = json_encode($images);
                     fwrite($dowloadFile, $txt);
                     fclose($dowloadFile);
