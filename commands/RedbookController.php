@@ -12,6 +12,7 @@ class RedbookController extends Controller
 {
     public function actionIndex($action,$sessionId,$url,$type)
     {
+        \Yii::warning("actionIndex");
         //$url = 'http://t.cn/AiTomEAA';
         $headers = get_headers($url, TRUE);
         //输出跳转到的网址
@@ -165,7 +166,7 @@ class RedbookController extends Controller
                 }
                 if($data['images']){
                     echo json_encode($images);
-                    $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId."txt", "w");
+                    $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId.".txt", "w");
                     $txt = json_encode($images);
                     fwrite($dowloadFile, $txt);
                     fclose($dowloadFile);
