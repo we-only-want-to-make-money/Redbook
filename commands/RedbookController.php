@@ -41,7 +41,7 @@ class RedbookController extends Controller
             $files[] = array(
                 // 抽取内容页的文章内容
                 'name' => "content",
-                'selector' => "//div[@class='content']/p",
+                'selector' => "//div[@class='left-card']//div[@class='content']/p",
                 'required' => false,
                 'repeated' => true,
             );
