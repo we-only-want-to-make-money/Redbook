@@ -12,7 +12,7 @@ class RedbookController extends Controller
 {
     public function actionIndex($docId)
     {
-        echo round(microtime()*1000);
+        echo round(microtime(true) * 1000);
         exit();
         $url = 'http://t.cn/AiTomEAA';
         $headers = get_headers($url, TRUE);
