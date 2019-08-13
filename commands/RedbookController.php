@@ -131,25 +131,25 @@ class RedbookController extends Controller
             }
             if(isset($data['content'])){
                 echo "<".$data['content'].">";
-                $dowloadFile = fopen("/home/wwwroot/default/".$sessionId."txt", "w");
+                $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId.".txt", "w");
                 $txt = $data['content'];
                 fwrite($dowloadFile, $txt);
                 fclose($dowloadFile);
             }
             if(isset($data['video'])){
                 echo "<" . 'https://'.$data['video'] . ">";
-                $dowloadFile = fopen("/home/wwwroot/default/".$sessionId."txt", "w");
-                $txt = $data['video'];
-                fwrite($dowloadFile, $txt);
+                $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId.".txt", "w");
+                //$txt = $data['video'];
+                fwrite($dowloadFile, json_encode($data));
                 fclose($dowloadFile);
             }
-            if(isset($data['poster'])){
+            /*if(isset($data['poster'])){
                 echo "<" . $data['poster'] . ">";
-                $dowloadFile = fopen("/home/wwwroot/default/".$sessionId."txt", "w");
+                $dowloadFile = fopen("/home/wwwroot/default/downloads/".$sessionId.".txt", "w");
                 $txt = $data['video'];
                 fwrite($dowloadFile, $txt);
                 fclose($dowloadFile);
-            }
+            }*/
            /* echo "<" . $data['title'] . ">";
             echo "<".$data['content'].">";
             echo "<" . $data['video'] . ">";*/
