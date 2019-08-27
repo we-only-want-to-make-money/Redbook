@@ -24,5 +24,30 @@ class RedbookController  extends Controller
 
 
     }
+    public function actionTest(){
+        $link =$_GET['link'];
+        //配置信息
+        $iiiLabVideoDownloadURL = "http://service.iiilab.com/video/download";   //iiiLab通用视频解析接口
+        $client = "7fb57db574e461fb";;   //iiiLab分配的客户ID
+        $clientSecretKey = "5e0f03b2ee1405d8b0ed8d99ed962dd9";  //iiiLab分配的客户密钥
+        //必要的参数
+//        $link = "http://v.douyin.com/DdRo2a/";
+//        $link = "https://weibo.com/tv/v/EFSNuE1Ky";
+        $timestamp = time() * 1000;
+        $sign = md5($link . $timestamp . $clientSecretKey);
+        $data = $this->file_get_contents_post($iiiLabVideoDownloadURL, array("link" => $link, "timestamp" => $timestamp, "sign" => $sign, "client" => $client));
+        return $data;
+    }
+    function file_get_contents_post($url, $post) {
+        $options = array(
+            "http"=> array(
+                "method"=>"POST",
+                "header" => "Content-type: application/x-www-form-urlencoded",
+                "content"=> http_build_query($post)
+            ),
+        );
+        $result = file_get_contents($url,false, stream_context_create($options));
+        return $result;
+    }
 }
 
