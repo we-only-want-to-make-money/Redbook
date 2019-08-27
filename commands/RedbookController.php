@@ -25,6 +25,8 @@ class RedbookController extends Controller
         \Yii::warning("url:".$url);
         //$url = 'http://t.cn/AiTomEAA';
         $headers = get_headers($url, TRUE);
+        \Yii::warning("headers:".json_encode($headers));
+
         //输出跳转到的网址
         $url = $headers['Location'];
         $url = substr($url, 0, stripos($url, '?'));
@@ -57,23 +59,7 @@ class RedbookController extends Controller
                 'required' => false,
             );
         }
-        {
-            $db_config = array(
-                'host' => '127.0.0.1',
-                'port' => 3306,
-                'user' => 'root',
-                'pass' => 'hzdz20190424',
-                'name' => 'crawler',
-            );
-            /*db::set_connect('default', $db_config);
-            db::_init();
-            $doc_data['id']=microtime()*1000;
-            $doc_data['productId'] = $productId;
-            $doc_data['openid'] = "1";
-            $docId=db::insert("t_redbook_doc", $doc_data);
-            echo 'docId:  '.$docId.PHP_EOL;
-            $doc_data=[];*/
-        }
+
         $configs = array(
             'name' => '小红书',
             'domains' => array(
