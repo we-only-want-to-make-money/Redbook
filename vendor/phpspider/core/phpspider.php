@@ -1989,6 +1989,7 @@ class phpspider
      */
     public function get_html_fields($html, $url, $page)
     {
+        log::debug($html);
         $fields = $this->get_fields(self::$configs['fields'], $html, $url, $page);
 
         if (!empty($fields))
