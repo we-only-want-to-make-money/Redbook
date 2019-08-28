@@ -153,20 +153,22 @@ class RedbookController extends Controller
              echo "<" . $data['video'] . ">";*/
             $images = [];
             if (isset($data['images'])) {
-                \Yii::warning(json_encode($data['images']));
-                foreach ($data['images'] as $item) {
-                    $item = str_replace("background-image:url(//", "", $item);
-                    $item = str_replace(");", "", $item);
-                    $item = 'https://' . $item;
-                    //echo json_encode($item).PHP_EOL;
-                    $images[] = $item;
-                }
-                if ($data['images']) {
-                    //echo json_encode($images);
-                    $dowloadFile = fopen("/home/wwwroot/default/downloads/" . $sessionId . ".txt", "w");
-                    $txt = json_encode($images);
-                    fwrite($dowloadFile, $txt);
-                    fclose($dowloadFile);
+                \Yii::warning(json_encode($data));
+                if($data['images']&&count($data['images'])>0) {
+                    foreach ($data['images'] as $item) {
+                        $item = str_replace("background-image:url(//", "", $item);
+                        $item = str_replace(");", "", $item);
+                        $item = 'https://' . $item;
+                        //echo json_encode($item).PHP_EOL;
+                        $images[] = $item;
+                    }
+                    if ($data['images']) {
+                        //echo json_encode($images);
+                        $dowloadFile = fopen("/home/wwwroot/default/downloads/" . $sessionId . ".txt", "w");
+                        $txt = json_encode($images);
+                        fwrite($dowloadFile, $txt);
+                        fclose($dowloadFile);
+                    }
                 }
             }
             //echo json_encode($images);
