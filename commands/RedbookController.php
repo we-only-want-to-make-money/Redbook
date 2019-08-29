@@ -76,6 +76,9 @@ class RedbookController extends Controller
             'content_url_regexes' => array(
                 $url
             ),
+            'proxies' => array(
+                'http://163.204.241.85:9999'
+            ),
             'db_config' => array(
                 'host' => '127.0.0.1',
                 'port' => 3306,
