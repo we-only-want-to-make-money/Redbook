@@ -4,10 +4,10 @@
 namespace app\commands;
 
 use phpspider\core\db;
+use phpspider\core\requests;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use phpspider\core\phpspider;
-use phpspider\core\requests;
 class RedbookController extends Controller
 {
     public function getVideoSize($url)
@@ -77,7 +77,7 @@ class RedbookController extends Controller
                 $url
             ),
             'proxies' => array(
-                'https://171.11.178.34:9999'
+                'http://36.42.117.23:37761'
             ),
             'db_config' => array(
                 'host' => '127.0.0.1',
@@ -200,7 +200,8 @@ class RedbookController extends Controller
 
     }
     function actionTest(){
-        $url = "https://www.xiaohongshu.com/discovery/item/5d494d7a000000002801e154?xhsshare=CopyLink&appuid=5c0a053e000000000500b9f2&apptime=1565158031";
+        $url = "https://www.xiaohongshu.com/discovery/item/5d3794cc0000000027039533?xhsshare=CopyLink&appuid=5c0a053e000000000500b9f2&apptime=1566358465";
+        requests::set_proxy(array('36.42.117.23:37761'));
         $html = requests::get($url);
         echo $html;
     }
