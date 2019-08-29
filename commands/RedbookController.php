@@ -7,7 +7,7 @@ use phpspider\core\db;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use phpspider\core\phpspider;
-
+use phpspider\core\requests;
 class RedbookController extends Controller
 {
     public function getVideoSize($url)
@@ -199,7 +199,11 @@ class RedbookController extends Controller
 
 
     }
-
+    function actionTest(){
+        $url = "https://www.xiaohongshu.com/discovery/item/5d494d7a000000002801e154?xhsshare=CopyLink&appuid=5c0a053e000000000500b9f2&apptime=1565158031";
+        $html = requests::get($url);
+        echo $html;
+    }
     /**
      *   * unicode 转 utf-8
      *   *
