@@ -77,7 +77,7 @@ class RedbookController extends Controller
                 $url
             ),
             'proxies' => array(
-                'http://163.204.241.85:9999'
+                'https://171.11.178.34:9999'
             ),
             'db_config' => array(
                 'host' => '127.0.0.1',
