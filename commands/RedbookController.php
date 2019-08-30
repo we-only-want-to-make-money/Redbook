@@ -216,7 +216,7 @@ class RedbookController extends Controller
     }
     function actionTest(){
         $url = "https://www.xiaohongshu.com/discovery/item/5d3794cc0000000027039533?xhsshare=CopyLink&appuid=5c0a053e000000000500b9f2&apptime=1566358465";
-        requests::set_proxy(array('36.42.117.23:37761'));
+        //requests::set_proxy(array('36.42.117.23:37761'));
         $html = requests::get($url);
         echo $html;
     }
