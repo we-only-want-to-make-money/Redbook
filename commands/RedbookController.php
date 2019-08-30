@@ -188,8 +188,8 @@ class RedbookController extends Controller
                 $txt = json_encode($link_data['data']['text']);
                 \Yii::warning("text:".$txt);
             }else if($type==2){
-                \Yii::warning("video:".json_encode($link_data['data']));
-                $link_data=json_decode($link_data['data'],true);
+                \Yii::warning("video:".json_encode($link_data['data']['video']));
+                //$link_data=json_decode($link_data['data'],true);
                 $data['video'] = str_replace("http", "https", $link_data['video']);
                 $data['size'] =$this->getVideoSize($link_data['video']);
                 $data['lunimg']=$link_data['cover'];
