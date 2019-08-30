@@ -178,8 +178,8 @@ class RedbookController extends Controller
                         //echo json_encode($item).PHP_EOL;
                         $images[] = $item;
                     }
-                    if ($data['images']) {
-                        $txt = json_encode($data['images']);
+                    if ($images['images']) {
+                        $txt = json_encode($images['images']);
                         \Yii::warning("imgs:".$txt);
                     }
                 }
