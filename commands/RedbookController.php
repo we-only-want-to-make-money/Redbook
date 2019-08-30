@@ -171,8 +171,19 @@ class RedbookController extends Controller
         }else{
             $txt=null;
             if($type==0){
-                $txt = json_encode($link_data['data']['imgs']);
-                \Yii::warning("imgs:".$txt);
+                $images = [];
+                if($link_data['data']['imgs']&&count($link_data['data']['imgs'])>0) {
+                    foreach ($link_data['data']['imgs'] as $item) {
+                        $item = 'https:' . $item;
+                        //echo json_encode($item).PHP_EOL;
+                        $images[] = $item;
+                    }
+                    if ($data['images']) {
+                        $txt = json_encode($data['images']);
+                        \Yii::warning("imgs:".$txt);
+                    }
+                }
+
             }else if($type==1){
                 $txt = json_encode($link_data['data']['text']);
                 \Yii::warning("text:".$txt);
