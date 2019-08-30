@@ -169,7 +169,7 @@ class RedbookController extends Controller
         if ($link_data['retCode'] != 200) {
             echo json_encode(['code'=>100,'message'=>'视频解析失败！','data'=>['video'=>'']]);
         }else{
-            $txt=null;
+            $txt="";
             if($type==0){
                 $images = [];
                 if($link_data['data']['imgs']&&count($link_data['data']['imgs'])>0) {
@@ -178,8 +178,8 @@ class RedbookController extends Controller
                         //echo json_encode($item).PHP_EOL;
                         $images[] = $item;
                     }
-                    if ($images['images']) {
-                        $txt = json_encode($images['images']);
+                    if (count($images)>0) {
+                        $txt = json_encode($images);
                         \Yii::warning("imgs:".$txt);
                     }
                 }
