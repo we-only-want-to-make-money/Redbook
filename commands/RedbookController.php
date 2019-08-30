@@ -19,8 +19,7 @@ class RedbookController extends Controller
         $format_num = sprintf("%.2f",strlen($movie)/1024/1024);
         return $format_num; //10.46
     }
-
-    public function actionIndex($action, $sessionId, $url, $type)
+    public function actionIndex1($action, $sessionId, $url, $type)
     {
         \Yii::warning("url:".$url);
         //$url = 'http://t.cn/AiTomEAA';
@@ -87,32 +86,6 @@ class RedbookController extends Controller
                 'name' => 'crawler',
             ),
             'fields' => $files,
-            /*array(
-                array(
-                    // 抽取内容页的文章内容
-                    'name' => "content",
-                    'selector' => "//div[@class='content']/p",
-                    'required' => false
-                ),
-                array(
-                    // 抽取内容页的文章作者
-                    'name' => "title",
-                    'selector' => "//h1[contains(@class,'title')]",//div[@class='note-image-container']/img",
-                    'required' => false
-                ),
-                // 图片
-                array(
-                    'name' => "images",
-                    'selector' => "//ul[@class='slide']//li//span/@style",
-                    'required' => false,
-                    'repeated' => true,
-                ),
-                array(
-                    'name' => "video",
-                    'selector' => "//div[@class='videoframe']/video[@class='videocontent']/@src",
-                    'required' => false,
-                ),
-            ),*/
         );
         $spider = new phpspider($configs);
         $spider->on_start = function ($phpspider) {
@@ -174,30 +147,59 @@ class RedbookController extends Controller
                     }
                 }
             }
-            //echo json_encode($images);
-
-            /* $db_data['content'] = $data['content'];
-             $db_data['images'] = json_encode($images);
-             $db_data['title'] =$data['title'];
-             $db_data['video'] =$data['video'];
-             $db_data['productId'] =$productId;
-             $sql = "Select Count(*) As `count` From `t_redbook` Where `productId`='$productId'";
-             $row = db::get_one($sql);
-             if (!$row['count'])
-             {
-                 echo '开始插入数据库'.PHP_EOL;
-                 db::insert("t_redbook", $db_data);
-             }
-             $sqldoc= "Select * From `t_redbook_doc` Where `id=`.$docId";
-             $row = db::get_one($sqldoc);
-             if($row&&$row['status']==0){
-                 db::update('t_redbook_doc',['status'=>1],['id'=>$docId]);
-             }*/
             return $data;
         };
         $spider->start();
 
 
+    }
+    public function actionIndex($action, $sessionId, $link, $type){
+        //配置信息
+        $iiiLabVideoDownloadURL = "http://service.iiilab.com/video/download";   //iiiLab通用视频解析接口
+        $client = "7fb57db574e461fb";;   //iiiLab分配的客户ID
+        $clientSecretKey = "5e0f03b2ee1405d8b0ed8d99ed962dd9";  //iiiLab分配的客户密钥
+        //必要的参数
+//        $link = "http://v.douyin.com/DdRo2a/";
+//        $link = "https://weibo.com/tv/v/EFSNuE1Ky";
+        $timestamp = time() * 1000;
+        $sign = md5($link . $timestamp . $clientSecretKey);
+        $data = $this->file_get_contents_post($iiiLabVideoDownloadURL, array("link" => $link, "timestamp" => $timestamp, "sign" => $sign, "client" => $client));
+        $link_data = json_decode($data,true);
+        \Yii::warning("iiilab:".$data);
+        if ($link_data['retCode'] != 200) {
+            echo json_encode(['code'=>100,'message'=>'视频解析失败！','data'=>['video'=>'']]);
+        }else{
+            $txt=null;
+            if($type==0){
+                $txt = json_encode($link_data['data']['imgs']);
+                \Yii::warning("imgs:".$txt);
+            }else if($type==1){
+                $txt = json_encode($link_data['data']['text']);
+                \Yii::warning("text:".$txt);
+            }else if($type==2){
+                $data['video'] = str_replace("http", "https", $link_data['data']['video']);
+                $data['size'] =$this->getVideoSize($link_data['data']['video']);
+                $data['lunimg']=$link_data['data']['cover'];
+                $txt = json_encode($data);
+                \Yii::warning("video:".$txt);
+            }
+            if($txt) {
+                $dowloadFile = fopen("/home/wwwroot/default/downloads/" . $sessionId . ".txt", "w");
+                fwrite($dowloadFile, $txt);
+                fclose($dowloadFile);
+            }
+        }
+    }
+    function file_get_contents_post($url, $post) {
+        $options = array(
+            "http"=> array(
+                "method"=>"POST",
+                "header" => "Content-type: application/x-www-form-urlencoded",
+                "content"=> http_build_query($post)
+            ),
+        );
+        $result = file_get_contents($url,false, stream_context_create($options));
+        return $result;
     }
     function actionTest(){
         $url = "https://www.xiaohongshu.com/discovery/item/5d3794cc0000000027039533?xhsshare=CopyLink&appuid=5c0a053e000000000500b9f2&apptime=1566358465";
