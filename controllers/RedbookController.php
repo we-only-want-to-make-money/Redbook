@@ -21,8 +21,15 @@ class RedbookController  extends Controller
      */
     public function actionIndex()
     {
-
-
+        $url="http://v6-dy.ixigua.com/5dd5a088eeceea4a41270bde1136247c/5d6e3558/video/m/220bbcf37ade188491a8eb533359a44147f1163554a000000fa6bc7580dc/?a=1128&br=1026&cr=0&cs=0&dr=0&ds=1&er=&l=2019090316413601015505721925262F&lr=&rc=M2xvZzppZm8zbzMzOmkzM0ApNzY1PDk8NjszN2lpOTQ3aWcwZW9eMGQubmdfLS1hLS9zczEyYDAtLWAwXl4wYTA0YTA6Yw%3D%3D";
+        $path='/home/wwwroot/default/we7/attachment/videos/';
+        $this->downFile($url,$path);
+    }
+    function downFile($url,$path){
+        $arr=parse_url($url);
+        $fileName=basename($arr['path']);
+        $file=file_get_contents($url);
+        file_put_contents($path.$fileName,$file);
     }
     public function actionTest(){
         $link =$_GET['link'];
