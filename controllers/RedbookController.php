@@ -71,6 +71,7 @@ class RedbookController  extends Controller
     }
     public function actionInfo(){
         phpinfo();
+        
     }
     /**
      * PDF2PNG
@@ -81,7 +82,7 @@ class RedbookController  extends Controller
      */
     function pdf2png($pdf,$path,$page=-1)
     {
-        
+
         if(!extension_loaded('imagick'))
         {
             echo "error1";
