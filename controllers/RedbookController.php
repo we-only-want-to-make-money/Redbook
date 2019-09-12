@@ -66,7 +66,8 @@ class RedbookController  extends Controller
         $scount=count($s);
         for($i=0;$i<$scount;$i++)
         {
-            echo "<div align=center><font color=red>Page ".($i+1)."</font><br><a href=\"".$s[$i]."\" target=_blank><img border=3 height=120 width=90 src=\"".$s[$i]."\"></a></div><p>";
+            echo $s[$i].PHP_EOL;
+            //echo "<div align=center><font color=red>Page ".($i+1)."</font><br><a href=\"".$s[$i]."\" target=_blank><img border=3 height=120 width=90 src=\"".$s[$i]."\"></a></div><p>";
         }
         return;
     }
