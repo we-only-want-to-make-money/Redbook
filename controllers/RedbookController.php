@@ -68,10 +68,11 @@ class RedbookController  extends Controller
         {
             echo "<div align=center><font color=red>Page ".($i+1)."</font><br><a href=\"".$s[$i]."\" target=_blank><img border=3 height=120 width=90 src=\"".$s[$i]."\"></a></div><p>";
         }
+        return;
     }
     public function actionInfo(){
         phpinfo();
-        
+
     }
     /**
      * PDF2PNG
