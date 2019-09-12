@@ -25,7 +25,7 @@ class RedbookController  extends Controller
         $path='/home/wwwroot/default/we7/attachment/videos/';
         $this->downFile($url,$path);
     }
-    function downFile($url,$path){
+    public function downFile($url,$path){
         $arr=parse_url($url);
         $fileName=basename($arr['path']);
         $file=file_get_contents($url);
@@ -45,7 +45,7 @@ class RedbookController  extends Controller
         $data = $this->file_get_contents_post($iiiLabVideoDownloadURL, array("link" => $link, "timestamp" => $timestamp, "sign" => $sign, "client" => $client));
         return $data;
     }
-    function file_get_contents_post($url, $post) {
+    public function file_get_contents_post($url, $post) {
         $options = array(
             "http"=> array(
                 "method"=>"POST",
@@ -56,7 +56,7 @@ class RedbookController  extends Controller
         $result = file_get_contents($url,false, stream_context_create($options));
         return $result;
     }
-    function actionPdf(){
+    public function actionPdf(){
         $imagePath = Yii::getAlias('@app/web/images');
         $pdfPath = Yii::getAlias('@app/web/pdf');
         $pdf=$pdfPath."/"."test.pdf";
@@ -69,7 +69,7 @@ class RedbookController  extends Controller
             echo "<div align=center><font color=red>Page ".($i+1)."</font><br><a href=\"".$s[$i]."\" target=_blank><img border=3 height=120 width=90 src=\"".$s[$i]."\"></a></div><p>";
         }
     }
-    function actionInfo(){
+    public function actionInfo(){
         phpinfo();
     }
     /**
@@ -81,8 +81,7 @@ class RedbookController  extends Controller
      */
     function pdf2png($pdf,$path,$page=-1)
     {
-        echo $path;
-        return [];
+        
         if(!extension_loaded('imagick'))
         {
             echo "error1";
