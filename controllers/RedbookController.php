@@ -56,5 +56,61 @@ class RedbookController  extends Controller
         $result = file_get_contents($url,false, stream_context_create($options));
         return $result;
     }
+    function actionPdf(){
+        $imagePath = Yii::getAlias('@app/web/images');
+        $pdfPath = Yii::getAlias('@app/web/pdf');
+        $pdf=$pdfPath."/"."test.pdf";
+        echo $pdf;
+        //$path="images";//请确保当前目录下有这个文件夹，由于一直要用，所以就不加检测了
+        $s=$this->pdf2png($pdf,$imagePath);
+        $scount=count($s);
+        for($i=0;$i<$scount;$i++)
+        {
+            echo "<div align=center><font color=red>Page ".($i+1)."</font><br><a href=\"".$s[$i]."\" target=_blank><img border=3 height=120 width=90 src=\"".$s[$i]."\"></a></div><p>";
+        }
+    }
+    function actionInfo(){
+        phpinfo();
+    }
+    /**
+     * PDF2PNG
+     * @param $pdf  待处理的PDF文件
+     * @param $path 待保存的图片路径
+     * @param $page 待导出的页面 -1为全部 0为第一页 1为第二页
+     * @return      保存好的图片路径和文件名
+     */
+    function pdf2png($pdf,$path,$page=-1)
+    {
+        echo $path;
+        return [];
+        if(!extension_loaded('imagick'))
+        {
+            echo "error1";
+            return false;
+        }
+        if(!file_exists($pdf))
+        {
+            echo "error2";
+
+            return false;
+        }
+        $im = new \Imagick();
+        $im->setResolution(120,120);
+        $im->setCompressionQuality(100);
+        if($page==-1)
+            $im->readImage($pdf);
+        else
+            $im->readImage($pdf."[".$page."]");
+        foreach ($im as $Key => $Var)
+        {
+            $Var->setImageFormat('png');
+            $filename = $path."/". md5($Key.time()).'.png';
+            if($Var->writeImage($filename) == true)
+            {
+                $Return[] = $filename;
+            }
+        }
+        return $Return;
+    }
 }
 
